@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Patch, Delete, Param,Req } from '@nestjs/common';
-import { Request } from 'express';
+import type { Request } from 'express';
 @Controller('users')
 export class UserController {
   @Get()
@@ -7,9 +7,9 @@ export class UserController {
     return ['ahmed', 'mohamed', 'madyan'];
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): string {
-    return `Find user with id ${id}`;
+  @Get(':username')
+  findOne(@Param('') param: any): string {
+    return param;
   }
 
   @Post()
