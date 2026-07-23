@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param,Req } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param,Req, Body } from '@nestjs/common';
 import type { Request } from 'express';
 @Controller('users')
 export class UserController {
@@ -13,10 +13,8 @@ export class UserController {
   }
 
   @Post()
-  create(@Req() req:Request): string {
-    console.log(req.body);
-    console.log(req.params);
-    return 'Create new user';
+  create(@Body() userData:any): string {
+    return userData;
   }
 
   @Patch(':id')
