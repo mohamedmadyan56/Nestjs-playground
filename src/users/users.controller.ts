@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { CreateUserDto } from './dtos/createUser.dto';
 
 @Controller('users')
 export class UserController {
@@ -23,7 +24,7 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() userData: any) {
+  create(@Body() userData: CreateUserDto) {
     return userData;
   }
 
@@ -38,6 +39,7 @@ export class UserController {
   @Delete(':username')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('username',)username:string){
-    console.log(username)
+    console.log(username);
   }
 }
+
