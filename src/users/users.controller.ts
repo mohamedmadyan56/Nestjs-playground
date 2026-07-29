@@ -9,24 +9,25 @@ import {
   HttpCode,
   HttpStatus,
   NotFoundException,
-} from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-User.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserEntity } from 'src/user.entity';
-import { v4 as uuid } from 'uuid';
-
-@Controller('users')
+  ValidationPipe,
+  UsePipes,
+} from "@nestjs/common";
+import { CreateUserDto } from "./dtos/create-User.dto";
+import { UpdateUserDto } from "./dtos/update-user.dto";
+import { UserEntity } from "src/user.entity";
+import { v4 as uuid } from "uuid";
+import { ParseUUIDPipe } from "@nestjs/common";
+@Controller("users")
 export class UserController {
-
-  private  readonly users:UserEntity[] = [];
+  private readonly users: UserEntity[] = [];
 
   @Get()
   find(): UserEntity[] {
     return this.users;
-  } 
+  }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): UserEntity {
+  @Get(":id")
+  findOne(@Param("id", ParseUUIDPipe) id: string): UserEntity {
     const user = this.users.find((user) => user.id === id);
 
     if (!user) {
@@ -35,31 +36,28 @@ export class UserController {
 
     return user;
   }
-
+  @UsePipes(ValidationPipe)
   @Post()
   create(@Body() CreateUserDto: CreateUserDto) {
-    const newUser:UserEntity={
+    const newUser: UserEntity = {
       ...CreateUserDto,
-      id:uuid(),
-
-    }
+      id: uuid(),
+    };
     this.users.push(newUser);
     return newUser;
   }
-
-  @Patch(':username')
+  @UsePipes(ValidationPipe)
+  @Patch(":username")
   update(
-    @Param('username') username: string,
+    @Param("username") username: string,
     @Body() UpdateUserDto: UpdateUserDto,
   ) {
-    
     return UpdateUserDto;
   }
 
-  @Delete(':username')
+  @Delete(":username")
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('username',)username:string){
+  remove(@Param("username") username: string) {
     console.log(username);
   }
 }
-
