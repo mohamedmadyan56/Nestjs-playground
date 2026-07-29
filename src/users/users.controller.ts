@@ -37,9 +37,8 @@ export class UserController {
 
     return user;
   }
-  @UsePipes(ValidationPipe)
   @Post()
-  create(@Body() CreateUserDto: CreateUserDto) {
+  create(@Body(new ValidationPipe({ groups: ['create'] })) ) {
     const newUser: UserEntity = {
       ...CreateUserDto,
       id: uuid(),
@@ -51,7 +50,7 @@ export class UserController {
   @Patch(":username")
   update(
     @Param("username") username: string,
-    @Body() UpdateUserDto: UpdateUserDto,
+    @Body(new ValidationPipe({ groups: ['update'] })) UpdateUserDto: UpdateUserDto,
   ) {
     return UpdateUserDto;
   }
