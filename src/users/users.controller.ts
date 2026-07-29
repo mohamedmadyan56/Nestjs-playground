@@ -18,6 +18,7 @@ import { UserEntity } from "src/user.entity";
 import { v4 as uuid } from "uuid";
 import { ParseUUIDPipe } from "@nestjs/common";
 @Controller("users")
+@UsePipes(ValidationPipe)
 export class UserController {
   private readonly users: UserEntity[] = [];
 
