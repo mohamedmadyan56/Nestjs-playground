@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestJS - Dependency Injection &amp; Inversion of Control</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Fira+Code:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    line-height: 1.8;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #1a1a2e;
+    border-radius: 24px;
+    padding: 50px 60px;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+    border: 1px solid #2a2a4a;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #e94560;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #2a2a4a;
+    padding-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f3460;
+    background: linear-gradient(135deg, #e94560, #c23152);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 45px;
+    margin-bottom: 16px;
+    padding-right: 12px;
+    border-right: 4px solid #e94560;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #e94560;
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin-bottom: 14px;
+    font-size: 16px;
+    color: #ccc;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, #16213e, #1a1a3e);
+    border-right: 4px solid #e94560;
+    padding: 18px 22px;
+    border-radius: 12px;
+    margin: 18px 0;
+    font-size: 15px;
+  }
+
+  .highlight-box strong {
+    color: #e94560;
+  }
+
+  code {
+    font-family: 'Fira Code', monospace;
+    background: #0f0f1a;
+    color: #ffd700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    border: 1px solid #2a2a4a;
+  }
+
+  pre {
+    background: #0f0f1a;
+    border: 1px solid #2a2a4a;
+    border-radius: 12px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 16px 0;
+    direction: ltr;
+    text-align: left;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #e0e0e0;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .keyword { color: #c792ea; }
+  .string { color: #c3e88d; }
+  .comment { color: #546e7a; font-style: italic; }
+  .function { color: #82aaff; }
+  .decorator { color: #f78c6c; }
+  .type { color: #ffcb6b; }
+  .number { color: #f78c6c; }
+
+  ul, ol {
+    margin: 10px 0 10px 20px;
+    padding-right: 20px;
+  }
+
+  li {
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: #bbb;
+  }
+
+  li strong {
+    color: #e94560;
+  }
+
+  .diagram {
+    background: #0f0f1a;
+    border: 1px solid #2a2a4a;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    direction: ltr;
+    text-align: left;
+    white-space: pre;
+    overflow-x: auto;
+    color: #e0e0e0;
+  }
+
+  .toc {
+    background: #0f0f1a;
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 24px 30px;
+    margin: 20px 0 30px;
+  }
+
+  .toc h3 {
+    margin-top: 0;
+    text-align: center;
+  }
+
+  .toc a {
+    color: #82aaff;
+    text-decoration: none;
+    display: block;
+    padding: 6px 0;
+    font-size: 15px;
+    border-bottom: 1px solid #1a1a2e;
+  }
+
+  .toc a:hover {
+    color: #e94560;
+  }
+
+  .footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 2px solid #2a2a4a;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: #e94560;
+    color: #fff;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  @media print {
+    body { background: #fff; color: #000; padding: 0; }
+    .container { box-shadow: none; border: 1px solid #ddd; background: #fff; }
+    h2 { -webkit-text-fill-color: #0f3460; color: #0f3460; }
+    p, li { color: #333; }
+    code { background: #f5f5f5; color: #c23152; border-color: #ddd; }
+    pre { background: #f9f9f9; border-color: #ddd; }
+    pre code { color: #333; }
+    .highlight-box { background: #f9f9f9; }
+    .diagram { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .toc { background: #f9f9f9; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>NestJS: Dependency Injection &amp; Inversion of Control</h1>
+<div class="subtitle">دليل شامل لفهم حقن التبعيات وقلب التحكم في NestJS<br>إعداد: Mohamed Madyan</div>
+
+<div class="toc">
+  <h3>📋 فهرس المحتويات</h3>
+  <a href="#intro">1. مقدمة عن Dependency Injection</a>
+  <a href="#ioc">2. Inversion of Control (قلب التحكم)</a>
+  <a href="#how-di">3. كيف يعمل DI في NestJS</a>
+  <a href="#providers">4. Providers (الموفريد)</a>
+  <a href="#tokens">5. Injection Tokens</a>
+  <a href="#scopes">6. Scopes (نطاقات الحياة)</a>
+  <a href="#custom">7. Custom Providers</a>
+  <a href="#modules">8. Modules &amp; DI</a>
+  <a href="#circular">9. Circular Dependencies</a>
+  <a href="#summary">10. الخلاصة</a>
+</div>
+
+<!-- ======== SECTION 1 ======== -->
+<h2 id="intro">1. ما هو Dependency Injection (DI)؟</h2>
+
+<p>
+  <strong>Dependency Injection</strong> هو نمط تصميم (Design Pattern) بيديك طريقة لإزالة الاعتماد المباشر بين الكلاسات. الفكرة إنك بدل ما كل class يخلق dependencies بتاعته بنفسه (باستخدام <code>new</code>)، إنت بتسلمه إياها من برّه — الـ framework هو اللي بيهتم بإنشائها وتمريرها.
+</p>
+
+<div class="highlight-box">
+  <strong>🎯 الهدف الأساسي:</strong> فصل المسؤوليات (Separation of Concerns) وتقليل الاقتران (Coupling) بين المكونات بحيث الكود يكون أسهل في الصيانة والاختبار.
+</div>
+
+<h3>مثال قبل DI (Bad Practice ❌)</h3>
+<pre><code><span class="keyword">export class</span> <span class="type">UsersService</span> {
+  <span class="keyword">private</span> repo: <span class="type">UsersRepository</span>;
+
+  <span class="function">constructor</span>() {
+    <span class="comment">// ❌ UsersService بيعتمد على class محدد - Tight Coupling</span>
+    <span class="keyword">this</span>.repo = <span class="keyword">new</span> <span class="type">UsersRepository</span>();
+  }
+}</code></pre>
+
+<h3>مثال بعد DI (Good Practice ✅)</h3>
+<pre><code><span class="keyword">export class</span> <span class="type">UsersService</span> {
+  <span class="comment">// ✅ NestJS هو اللي هيحل dependency دي ويحقنها</span>
+  <span class="function">constructor</span>(<span class="keyword">private</span> <span class="keyword">readonly</span> repo: <span class="type">UsersRepository</span>) {}
+}</code></pre>
+
+<p>في المثال التاني، <code>UsersService</code> مش عارف إزاي <code>UsersRepository</code> بيتصنع — هو بس بيطلب الـ instance. NestJS (الـ container) هو اللي بيلاقي instance ويحطها في الـ constructor.</p>
+
+<!-- ======== SECTION 2 ======== -->
+<h2 id="ioc">2. Inversion of Control (قلب التحكم)</h2>
+
+<p>
+  <strong>Inversion of Control (IoC)</strong> هو مبدأ أوسع من DI. معناه إنك بتسلم التحكم في تدفق البرنامج لـ framework خارجي. بدل ما الكود بتاعك هو اللي يتحكم في كل حاجة، الـ framework هو اللي يستدعي الكود بتاعك.
+</p>
+
+<h3>IoC vs DI — إيه الفرق؟</h3>
+<ul>
+  <li><strong>IoC (قلب التحكم):</strong> مبدأ عام — انت بتقول للـ framework: "أنا هكتب الـ logic بس، وإنت تدير الباقي". زي ما NestJS يستدعي Controllers بتاعتك لما يجي Request.</li>
+  <li><strong>DI (حقن التبعيات):</strong> تطبيق محدد لمبدأ IoC — الـ framework بيدير تبعيات كل Class ويحقنها فيه.</li>
+</ul>
+
+<div class="highlight-box">
+  <strong>💡 الخلاصة:</strong> كل DI هو IoC، مش كل IoC هو DI. DI هو واحد من طرق تطبيق IoC.
+</div>
+
+<h3>تصور عملي لـ IoC</h3>
+<div class="diagram">┌─────────────────────────────────────────────────────┐
+│                   IoC Container                      │
+│                    (NestJS Runtime)                   │
+├─────────────────────────────────────────────────────┤
+│                                                       │
+│  ┌──────────────┐    ┌──────────────┐               │
+│  │  Controller   │───▶│   Service    │               │
+│  │  (يحقن فيه)   │    │  (يحقن فيه)  │               │
+│  └──────────────┘    └──────┬───────┘               │
+│                             │                         │
+│                    ┌────────▼───────┐               │
+│                    │  Repository    │                 │
+│                    │  (يحقن فيه)    │                 │
+│                    └────────────────┘               │
+│                                                       │
+│  ═══════════════════════════════════════════════════  │
+│                                                       │
+│  عند تشغيل التطبيق:                                    │
+│  1. NestJS بيمسح كل الموديولات                         │
+│  2. بيبني Graph التبعيات                                │
+│  3. بيحل dependencies بالترتيب الصح                      │
+│  4. يحقنها في الـ constructors                         │
+└─────────────────────────────────────────────────────┘</div>
+
+<!-- ======== SECTION 3 ======== -->
+<h2 id="how-di">3. كيف يعمل DI في NestJS بالتفصيل؟</h2>
+
+<p>NestJS بيستخدم <strong>IoC Container</strong> (حاوية قلب التحكم) عشان يدير كل الـ dependencies. العملية بتتم على 3 خطوات:</p>
+
+<h3>الخطوة 1: التسجيل (Registration)</h3>
+<p>
+  أول حاجة، لازم تخبر NestJS عن الخدمات المتاحة عن طريق إضافتها في <code>providers</code> array في الـ Module.
+</p>
+
+<pre><code><span class="decorator">@Module</span>({
+  controllers: [<span class="type">UsersController</span>],
+  providers:    [<span class="type">UsersService</span>, <span class="type">UsersRepository</span>],
+  <span class="comment">//              ╚═══════════╝</span>
+  <span class="comment">//              دي الـ Providers اللي container هيديرها</span>
+})
+<span class="keyword">export class</span> <span class="type">UsersModule</span> {}</code></pre>
+
+<h3>الخطوة 2: الحل (Resolution)</h3>
+<p>
+  لما NestJS يحتاج class معين، بيفحص constructor بتاعه ويشوف dependencies المطلوبة. بعد كده بيبحث في الـ registry بتاعه عشان يلاقي instances جاهزة أو يخلق واحدة جديدة.
+</p>
+
+<div class="diagram">    UsersController بحتاج UsersService
+           │
+           ▼
+    IoC Container بيتفقد constructor بتاع UsersService
+           │
+           ▼
+    لا حاجة UsersService عنده dependency (UsersRepository)
+           │
+           ▼
+    Container بيدور على UsersRepository في providers
+           │
+           ▼
+    لو لقاه: بيخلق instance من UsersRepository
+           │
+           ▼
+    بيحقن UsersRepository جوه UsersService
+           │
+           ▼
+    بيحقن UsersService جوه UsersController</div>
+
+<h3>الخطوة 3: الحقن (Injection)</h3>
+<p>
+  بعد ما الـ Container يحل كل التبعيات، بيحقنها جوه الـ constructors تلقائيًا. أنت بس بتكتب التايب في الـ constructor parameter.
+</p>
+
+<pre><code><span class="decorator">@Injectable</span>()
+<span class="keyword">export class</span> <span class="type">UsersService</span> {
+  <span class="function">constructor</span>(
+    <span class="keyword">private</span> <span class="keyword">readonly</span> repo: <span class="type">UsersRepository</span>,
+    <span class="decorator">@Inject</span>(<span class="string">'CACHE_MANAGER'</span>) <span class="keyword">private</span> cache: <span class="type">Cache</span>,
+  ) {}
+}</code></pre>
+
+<div class="highlight-box">
+  <strong>⚡ الـ @Injectable() decorator:</strong> بيخبر NestJS إن الـ class ده ممكن يكون عنده dependencies ويحتاج يتعامل معاه الـ IoC Container. لو نسيت تحطها، NestJS مش هيعرف يحقن حاجة فيه.
+</div>
+
+<!-- ======== SECTION 4 ======== -->
+<h2 id="providers">4. Providers — قلب الـ DI في NestJS</h2>
+
+<p>
+  <strong>Provider</strong> هو أي class أو value أو factory NestJS يقدر يستخدمها ويحقنها في أماكن تانية. كل provider بيتسجل في Module وبيبقى جزء من الـ IoC Container.
+</p>
+
+<h3>أنواع الـ Providers:</h3>
+<ul>
+  <li><strong>🔹 Class Providers</strong> — أسهل وأشهر نوع. <code>providers: [UsersService]</code></li>
+  <li><strong>🔸 Value Providers</strong> — لما تحقن قيمة ثابتة أو object.</li>
+  <li><strong>🔹 Factory Providers</strong> — لما تحتاج منطق معين عشان تنشئ الـ instance.</li>
+  <li><strong>🔸 Alias Providers</strong> — تعمل alias لـ provider موجود.</li>
+</ul>
+
+<div class="highlight-box">
+  <strong>📌 مهم:</strong> Provider بيتحول لـ <strong>instance</strong> واحدة أو أكتر حسب الـ scope. وكل provider ليه <strong>Token</strong> مميز بيستخدمه Container للبحث.
+</div>
+
+<!-- ======== SECTION 5 ======== -->
+<h2 id="tokens">5. Injection Tokens</h2>
+
+<p>
+  كل provider في Container ليه <strong>Token</strong> بيميزه. لما NestJS يدور على dependency، بيستخدم الـ Token عشان يلاقيها.
+</p>
+
+<h3>أنواع الـ Tokens:</h3>
+<pre><code><span class="comment">// 1. Class Token (الأشهر):</span>
+providers: [<span class="type">UsersService</span>]
+<span class="comment">// Token = UsersService class نفسه</span>
+
+<span class="comment">// 2. String Token:</span>
+providers: [{ provide: <span class="string">'DATABASE_CONNECTION'</span>, useValue: db }]
+<span class="comment">// Token = 'DATABASE_CONNECTION'</span>
+
+<span class="comment">// 3. Symbol Token (للتأكد من التفرد):</span>
+<span class="keyword">export const</span> <span class="type">CACHE</span> = Symbol(<span class="string">'CACHE'</span>);
+providers: [{ provide: <span class="type">CACHE</span>, useClass: <span class="type">RedisCache</span> }]</code></pre>
+
+<h3>ازاي تحقنها؟</h3>
+<pre><code><span class="comment">// Class Token — NestJS بيعرف automatically</span>
+<span class="function">constructor</span>(<span class="keyword">private</span> service: <span class="type">UsersService</span>) {}
+
+<span class="comment">// String/Symbol Token — محتاج @Inject()</span>
+<span class="function">constructor</span>(
+  <span class="decorator">@Inject</span>(<span class="string">'DATABASE_CONNECTION'</span>) <span class="keyword">private</span> db: <span class="type">Connection</span>
+) {}</code></pre>
+
+<!-- ======== SECTION 6 ======== -->
+<h2 id="scopes">6. Scopes — نطاقات حياة الـ Provider</h2>
+
+<p>كل provider ليه <strong>Scope</strong> بيحدد مدة حياة الـ instance:</p>
+
+<table style="width:100%; border-collapse: collapse; margin: 16px 0; font-size: 15px;">
+  <tr style="background: #0f0f1a; border-bottom: 2px solid #e94560;">
+    <th style="padding: 12px; text-align: right; color: #e94560;">النطاق</th>
+    <th style="padding: 12px; text-align: right; color: #e94560;">الوصف</th>
+    <th style="padding: 12px; text-align: right; color: #e94560;">الاستخدام</th>
+  </tr>
+  <tr style="border-bottom: 1px solid #2a2a4a;">
+    <td style="padding: 10px;"><code>DEFAULT</code> (Singleton)</td>
+    <td style="padding: 10px;">instance واحدة للتطبيق كله</td>
+    <td style="padding: 10px;">الـ default ومثالي لمعظم الحالات</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #2a2a4a;">
+    <td style="padding: 10px;"><code>REQUEST</code></td>
+    <td style="padding: 10px;">instance جديدة لكل incoming request</td>
+    <td style="padding: 10px;">لما تحتاج data خاصة بكل request</td>
+  </tr>
+  <tr>
+    <td style="padding: 10px;"><code>TRANSIENT</code></td>
+    <td style="padding: 10px;">instance جديدة كل ما يحقن في مكان جديد</td>
+    <td style="padding: 10px;">لما كل consumer محتاج نسخته الخاصة</td>
+  </tr>
+</table>
+
+<div class="highlight-box">
+  <strong>⚠️ تحذير:</strong> استخدام <code>REQUEST</code> و <code>TRANSIENT</code> بيأثر على performance لأن كل instance جديد بيتعمل لكل طلب/حقن. استخدمهم بس لما تحتاجهم فعلاً.
+</div>
+
+<!-- ======== SECTION 7 ======== -->
+<h2 id="custom">7. Custom Providers</h2>
+
+<p>في بعض الحالات، محتاج تتحكم في طريقة إنشاء الـ Provider. هنا يجي دور الـ Custom Providers:</p>
+
+<h3>useValue — لحقن قيم ثابتة</h3>
+<pre><code>providers: [
+  {
+    provide: <span class="string">'CONFIG'</span>,
+    useValue: { apiUrl: <span class="string">'https://api.example.com'</span>, port: <span class="number">3000</span> },
+  },
+]</code></pre>
+
+<h3>useFactory — منطق ديناميكي للإنشاء</h3>
+<pre><code>providers: [
+  {
+    provide: <span class="string">'DATABASE_CONNECTION'</span>,
+    useFactory: <span class="function">async</span> (config: <span class="type">ConfigService</span>) => {
+      <span class="keyword">const</span> conn = <span class="keyword">await</span> createConnection(config.get(<span class="string">'db'</span>));
+      <span class="keyword">return</span> conn;
+    },
+    inject: [<span class="type">ConfigService</span>],  <span class="comment">// Dependencies تانية للـ Factory</span>
+  },
+]</code></pre>
+
+<h3>useExisting — Alias لـ Provider موجود</h3>
+<pre><code>providers: [
+  <span class="type">LoggerService</span>,
+  {
+    provide: <span class="string">'LOGGER_ALIAS'</span>,
+    useExisting: <span class="type">LoggerService</span>,
+  },
+]</code></pre>
+
+<!-- ======== SECTION 8 ======== -->
+<h2 id="modules">8. Modules &amp; DI</h2>
+
+<p>الـ <strong>Modules</strong> في NestJS بتنظم الـ DI Container. كل Module عنده scope خاص بيه من الـ providers:</p>
+
+<div class="diagram">┌─────────────────────────────────────┐
+│         AppModule                    │
+│  ┌──────────────────────────────┐   │
+│  │  UsersModule (imports)       │   │
+│  │  providers: [UsersService]   │   │
+│  │  exports:  [UsersService]    │◀──│── يتشارك مع الموديولات التانية
+│  └──────────────────────────────┘   │
+│  ┌──────────────────────────────┐   │
+│  │  AuthModule (imports)        │   │
+│  │  imports: [UsersModule]      │   │
+│  │  providers: [AuthService]    │   │
+│  └──────────────────────────────┘   │
+└─────────────────────────────────────┘</div>
+
+<h3>قواعد مهمة عن الـ Modules Scope:</h3>
+<ul>
+  <li><strong>Private by default:</strong> الـ providers متاحة بس جوه الـ module نفسهم.</li>
+  <li><strong>Export:</strong> عشان تشارك provider مع module تاني، لازم تصدره في <code>exports</code>.</li>
+  <li><strong>Global Modules:</strong> لو حطيت <code>@Global()</code>، providers بتاعته متاحة لكل الموديولات من غير ما تستورد.</li>
+</ul>
+
+<pre><code><span class="decorator">@Global</span>()  <span class="comment">// ✅ متاح لكل حاجة — استخدم بحذر</span>
+<span class="decorator">@Module</span>({
+  providers: [<span class="type">CommonService</span>],
+  exports:   [<span class="type">CommonService</span>],
+})
+<span class="keyword">export class</span> <span class="type">CommonModule</span> {}</code></pre>
+
+<!-- ======== SECTION 9 ======== -->
+<h2 id="circular">9. Circular Dependencies (التبعيات الدائرية)</h2>
+
+<p>
+  لما Service A يعتمد على Service B و Service B يعتمد على Service A — ده اسمه <strong>Circular Dependency</strong>. NestJS مش بيقدر يحل dependencies زي دي بسهولة.
+</p>
+
+<div class="highlight-box">
+  <strong>🚨 المشكلة:</strong> Container مش هيعرف يخلق A قبل B ولا B قبل A لأن كل واحد بيحتاج التاني.
+</div>
+
+<h3>الحلول:</h3>
+<pre><code><span class="comment">// الحل 1: Forward Reference (@Inject(forwardRef(...)))</span>
+<span class="decorator">@Injectable</span>()
+<span class="keyword">export class</span> <span class="type">UsersService</span> {
+  <span class="function">constructor</span>(
+    <span class="decorator">@Inject</span>(forwardRef(<span class="function">()</span> => <span class="type">AuthService</span>))
+    <span class="keyword">private</span> authService: <span class="type">AuthService</span>,
+  ) {}
+}
+
+<span class="comment">// الحل 2: إعادة تصميم — أحسن حل</span>
+<span class="comment">// استخدم EventEmitter أو Mediator Pattern</span>
+<span class="comment">// عشان تفصل الاعتماد المتبادل</span></code></pre>
+
+<div class="highlight-box">
+  <strong>💡 نصيحة:</strong> Circular dependencies غالبًا indication إن في design problem. حاول تعيد تصميم الكود بدل ما تستخدم forwardRef.
+</div>
+
+<!-- ======== SECTION 10 ======== -->
+<h2 id="summary">10. الخلاصة — اللي محتاج تفهمه وتذاكره</h2>
+
+<div class="diagram">┌─────────────────────────────────────────────────────────────┐
+│                  ملخص Dependency Injection في NestJS          │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  📦 IoC Container = خريطة (Map) من Token → Instance           │
+│                                                               │
+│  📝 التسجيل: Module → providers[]                             │
+│                                                               │
+│  🔍 الحل: Container يشوف constructor ويعرف dependencies       │
+│                                                               │
+│  💉 الحقن: NestJS بيمرر instances للـ constructor تلقائيًا    │
+│                                                               │
+│  🎯 @Injectable(): يقول لـ NestJS إن الـ class ده قابل للحقن  │
+│                                                               │
+│  🏷️ Injection Token: Class / String / Symbol                  │
+│                                                               │
+│  🔄 Scope: Singleton (default) | Request | Transient          │
+│                                                               │
+│  📂 Module Scope: Private بإفتراضي — Export للمشاركة          │
+│                                                               │
+└─────────────────────────────────────────────────────────────┘</div>
+
+<h3>أهم النقايط اللي تثبتها:</h3>
+<ul>
+  <li><strong>@Injectable()</strong> — كل service لازم يكون عنده decorator ده.</li>
+  <li><strong>providers array</strong> — سجل كل service في module تبعها.</li>
+  <li><strong>constructor injection</strong> — اختصار <code>private readonly</code> في الـ constructor.</li>
+  <li><strong>Singleton by default</strong> — نفس الـ instance في كل مكان (مفيد للـ caching, connections).</li>
+  <li><strong>Custom providers</strong> — استخدم <code>useValue</code>, <code>useFactory</code> for flexibility.</li>
+  <li><strong>@Inject()</strong> — استخدمه مع string/symbol tokens.</li>
+  <li><strong>Exports</strong> — عشان تشارك provider برا module.</li>
+</ul>
+
+<div class="highlight-box" style="border-right-color: #4caf50;">
+  <strong>🔥 الـ Magic وراء NestJS:</strong> <br>
+  NestJS بيستخدم الـ <strong>Reflection API</strong> (من خلال reflect-metadata) عشان يقرا type hints من constructor parameters في runtime. لما تكتب <code>private repo: UsersRepository</code>، TypeScript بيحفظ metadata إن parameter ده من نوع <code>UsersRepository</code>. NestJS بقرا الميتاداتا دي ويعرف إنه يحتاج يحقن <code>UsersRepository</code> فيه.
+</div>
+
+<div class="footer">
+  <p>NestJS Study Guide — Dependency Injection &amp; Inversion of Control</p>
+  <p>تم الإعداد بواسطة Mohamed Madyan باستخدام NestJS + TypeScript</p>
+</div>
+
+</div>
+
+</body>
+</html>

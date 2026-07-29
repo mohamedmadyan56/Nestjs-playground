@@ -33,7 +33,7 @@ export class UserController {
   }
 
   @Get(":id")
-  findOne(@Param("id", ParseUUIDPipe) id: string): UserEntity[] {
+  findOne(@Param("id", ParseUUIDPipe) id: string): UserEntity {
     return this.userService.findUserById(id);
 
 
