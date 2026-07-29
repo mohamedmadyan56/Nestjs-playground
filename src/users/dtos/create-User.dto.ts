@@ -7,8 +7,8 @@ import {
 
 export class CreateUserDto {
   @IsString()
-  @Length(3, 20, { groups: ['create'] })
-  @Length(3, 20, { groups: ['update'] })
+  @Length(3, 20,)
+  @Length(3, 20,)
   username: string;
 
   @IsEmail({}, { message: 'icorrect email' })

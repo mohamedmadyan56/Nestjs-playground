@@ -11,19 +11,21 @@ import {
   NotFoundException,
   ValidationPipe,
   UsePipes,
+  Query,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-User.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 import { UserEntity } from "src/user.entity";
 import { v4 as uuid } from "uuid";
 import { ParseUUIDPipe } from "@nestjs/common";
+import { CustomValidationPipe } from "./pipes/validation-pipe";
 @Controller("users")
 @UsePipes(ValidationPipe)
 export class UserController {
   private readonly users: UserEntity[] = [];
 
   @Get()
-  find(): UserEntity[] {
+  find(@Query('username', CustomValidationPipe) username: string): UserEntity[] {
     return this.users;
   }
 
