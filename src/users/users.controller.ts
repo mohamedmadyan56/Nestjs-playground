@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Headers
   HttpCode,
   HttpStatus,
   NotFoundException,
@@ -39,7 +40,10 @@ export class UserController {
 
   }
   @Post()
-  create(@Body() CreateUserDto: CreateUserDto) {
+  create(@Body() CreateUserDto: CreateUserDto,
+    @Headers() headers: any
+  ) {
+    console.log(headers);
     return this.userService.createUser(CreateUserDto);
   }
 
