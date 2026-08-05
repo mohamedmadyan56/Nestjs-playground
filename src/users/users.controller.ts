@@ -13,6 +13,7 @@ import {
   ValidationPipe,
   UsePipes,
   Query,
+  Ip
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-User.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
@@ -41,7 +42,8 @@ export class UserController {
   }
   @Post()
   create(@Body() CreateUserDto: CreateUserDto,
-    @Headers() headers: any
+    @Headers() headers: any,
+    @Ip() ip: any,
   ) {
     console.log(headers);
     return this.userService.createUser(CreateUserDto);
