@@ -1,13 +1,14 @@
-import { Controller, Get, Query, Param } from "@nestjs/common"
-@Controller('users')
-export class UserController {
-    @Get(':id')
-    getUsers(
-        @Param('id') id: any,
-        @Query('limit') limit: any,   // query param
-        @Query('page') page: any,
+import { Module } from '@nestjs/common';
+import { UserController } from './users.controller';
 
-    ) {
-        return 'User Founded';
+class MockUserService {
+    findUser() {
+        return ['user1', 'user2'];
     }
 }
+@Module({
+    controllers: [UserController],
+
+})
+
+export class UserModule { }
