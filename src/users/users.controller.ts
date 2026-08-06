@@ -1,4 +1,6 @@
-import { Controller, Get, Query, Param, ParseIntPipe, DefaultValuePipe } from "@nestjs/common"
+import { Controller, Get, Query, Param, ParseIntPipe, DefaultValuePipe, ValidationPipe, Body, Post } from "@nestjs/common"
+import { CreateUserDto } from './dto/create-user.dto';
+
 @Controller('users')
 export class UserController {
   @Get(':id')
@@ -10,6 +12,11 @@ export class UserController {
     console.log({ limit, typeofLimit: typeof limit, page, typeofPage: typeof page });
 
     return 'user found'
+  }
+  @Post()
+  createUser(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
+    console.log(createUserDto);
+    return 'User created';
   }
 }
 
