@@ -2,12 +2,12 @@ import { Controller, Get, Query, Param, ParseIntPipe, DefaultValuePipe, Validati
 import { CreateUserDto } from '../users/dtos/create-user.dto';
 import { GetUsersParamDto } from "./dtos/get-users-param.dto";
 import { PatchUserDto } from "./dtos/patch-user.dto";
-import { UserSerive } from "./providers/users.service";
+import { UsersService } from "./providers/users.service";
 @Controller('users')
 export class UserController {
 
   constructor(
-    private readonly usersService: UserSerive
+    private readonly usersService: UsersService
   ) { }
 
 
