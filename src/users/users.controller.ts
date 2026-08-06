@@ -2,16 +2,25 @@ import { Controller, Get, Query, Param, ParseIntPipe, DefaultValuePipe, Validati
 import { CreateUserDto } from '../users/dtos/create-user.dto';
 import { GetUsersParamDto } from "./dtos/get-users-param.dto";
 import { PatchUserDto } from "./dtos/patch-user.dto";
-
+import { UserSerive } from "./providers/users.service";
 @Controller('users')
 export class UserController {
+
+  constructor(
+    private readonly usersService: UserSerive
+  ) { }
+
+
+
+
+
   @Get(':id')
   getUsers(
     @Param() getUserParamDto: GetUsersParamDto,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
-    console.log(getUserParamDto)
+    return this.usersService.findAll(getUserParamDto, limit, page);
 
     return 'user found'
   }
@@ -23,7 +32,7 @@ export class UserController {
 
   @Patch()
   public patchUser(@Body() patchUserDto: PatchUserDto) {
-
+    return patchUserDto;
   }
 }
 
