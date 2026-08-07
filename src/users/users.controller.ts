@@ -1,65 +1,41 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
-  Param,
-  Body,
-  Headers
-  HttpCode,
-  HttpStatus,
-  NotFoundException,
-  ValidationPipe,
-  UsePipes,
-  Query,
-  Ip
-} from "@nestjs/common";
-import { CreateUserDto } from "./dtos/create-User.dto";
-import { UpdateUserDto } from "./dtos/update-user.dto";
-import { UserEntity } from "src/user.entity";
-import { v4 as uuid } from "uuid";
-import { ParseUUIDPipe } from "@nestjs/common";
-import { CustomValidationPipe } from "./pipes/validation-pipe";
-import { UserService } from "./users.service"
-@Controller("users")
-@UsePipes(ValidationPipe)
+import { Controller, Get, Query, Param, ParseIntPipe, DefaultValuePipe, ValidationPipe, Body, Post, Patch } from "@nestjs/common"
+import { CreateUserDto } from '../users/dtos/create-user.dto';
+import { GetUsersParamDto } from "./dtos/get-users-param.dto";
+import { PatchUserDto } from "./dtos/patch-user.dto";
+import { UsersService } from "./providers/users.service";
+import { ApiTags } from '@nestjs/swagger';
+
+@Controller('users')
+@ApiTags('Users')
 export class UserController {
-  constructor(private readonly userService: UserService) {
 
-  }
-
-  @Get()
-  find(): UserEntity[] {
-    return this.userService.findUser();
-  }
-
-  @Get(":id")
-  findOne(@Param("id", ParseUUIDPipe) id: string): UserEntity {
-    return this.userService.findUserById(id);
+  constructor(
+    private readonly usersService: UsersService
+  ) { }
 
 
+
+
+
+  @Get(':id')
+  getUsers(
+    @Param() getUserParamDto: GetUsersParamDto,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ) {
+    return this.usersService.findAll(getUserParamDto, limit, page);
+
+    return 'user found'
   }
   @Post()
-  create(@Body() CreateUserDto: CreateUserDto,
-    @Headers() headers: any,
-    @Ip() ip: any,
-  ) {
-    console.log(headers);
-    return this.userService.createUser(CreateUserDto);
+  createUser(@Body() createUserDto: CreateUserDto) {
+    console.log(typeof createUserDto);
+    return 'User created';
   }
 
-
-  @Patch(":id")
-  update(
-    @Param("id") id: string,
-    @Body() UpdateUserDto: UpdateUserDto,) {
-    return this.userService.updateUser(id, UpdateUserDto)
-  }
-
-  @Delete(":id")
-  @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param("id") id: string) {
-    this.userService.deleteUser(id);
+  @Patch()
+  public patchUser(@Body() patchUserDto: PatchUserDto) {
+    return patchUserDto;
   }
 }
+
