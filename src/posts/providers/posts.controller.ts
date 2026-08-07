@@ -1,5 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { PostsService } from './posts.service';
+import { Controller, Get, Post, Param } from '@nestjs/common';
+import { PostsService } from '../posts.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('posts')
@@ -19,6 +19,12 @@ export class PostsController {
     @Get('{:userId}')
     getPosts(@Param('userId') userId: string) {
         return this.postService.findAll(userId);
+    }
+
+
+    @Post()
+    public createPost() {
+
     }
 
 }
