@@ -4,6 +4,7 @@ import { PostsModule } from './posts/providers/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { type } from "os";
+import { User } from "./users/user.entity";
 @Module({
     imports: [UserModule, PostsModule, AuthModule, TypeOrmModule.forRootAsync({
         imports: [],
@@ -12,7 +13,7 @@ import { type } from "os";
 
 
             type: 'postgres',
-            entities: [],
+            entities: [User],
             synchronize: true,
             host: 'localhost',
             port: 5432,
