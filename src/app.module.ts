@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { type } from "os";
 import { User } from "./users/user.entity";
 import { TagsModule } from './tags/tags.module';
+import { MetaOptionsModule } from './meta-options/meta-options.module';
 @Module({
     imports: [UserModule, PostsModule, AuthModule, TypeOrmModule.forRootAsync({
         imports: [],
@@ -23,6 +24,6 @@ import { TagsModule } from './tags/tags.module';
             database: 'nestjs-blog'
         })
 
-    }), TagsModule],
+    }), TagsModule, MetaOptionsModule],
 })
 export class AppModule { }
