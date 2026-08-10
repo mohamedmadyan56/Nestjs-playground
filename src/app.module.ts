@@ -15,7 +15,8 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
 
 
             type: 'postgres',
-            entities: [User],
+
+            autoLoadEntities: true,
             synchronize: true,
             host: 'localhost',
             port: 5432,
