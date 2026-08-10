@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { postType } from "./enums/postyType.enum";
+import { postStatus } from "./enums/postStatus.enum";
 
 @Entity()
 export class Post {
@@ -15,11 +16,11 @@ export class Post {
 
     @Column({
         type: 'enum',
-        enum: PostType,
+        enum: postType,
         nullable: false,
-        default: PostType.POST,
+        default: postType.POST,
     })
-    postType: PostType;
+    postType: postType;
 
     @Column({
         type: 'varchar',
@@ -31,11 +32,11 @@ export class Post {
 
     @Column({
         type: 'enum',
-        enum: PostStatus,
+        enum: postStatus,
         nullable: false,
-        default: PostStatus.DRAFT,
+        default: postStatus.DRAFT,
     })
-    status: PostStatus;
+    status: postStatus;
 
     @Column({
         type: 'text',
