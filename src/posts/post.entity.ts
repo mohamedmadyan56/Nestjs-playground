@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { postType } from "./enums/postyType.enum";
 import { postStatus } from "./enums/postStatus.enum";
+import { CreatePostMetaOptionsDto } from "src/meta-options/dtos/ceate-post-meta-options-dto";
+import { MetaOption } from "src/meta-options/meta-options.entity";
 
 @Entity()
 export class Post {
@@ -63,6 +65,14 @@ export class Post {
     })
     publishedOn: Date;
 
-    // tags
-    // metaOptions
+
+
+    @OneToOne(() => MetaOption)
+    metaOptions?: MetaOption;
+
+
+
+    tags?: string[];
+
+
 }
