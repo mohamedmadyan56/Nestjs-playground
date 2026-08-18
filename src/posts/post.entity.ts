@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { postType } from "./enums/postyType.enum";
 import { postStatus } from "./enums/postStatus.enum";
 import { CreatePostMetaOptionsDto } from "src/meta-options/dtos/ceate-post-meta-options-dto";
@@ -68,6 +68,7 @@ export class Post {
 
 
     @OneToOne(() => MetaOption)
+    @JoinColumn()
     metaOptions?: MetaOption;
 
 
