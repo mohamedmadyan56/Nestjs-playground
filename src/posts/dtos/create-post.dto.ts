@@ -43,11 +43,11 @@ export class CreatePostDto {
     @IsString({ each: true })
     @MinLength(3, { each: true })
     tags?: string[];
-    @IsOptional()
-    @IsArray()
+
+
     @ValidateNested({ each: true })
     @Type(() => CreatePostMetaOptionsDto)
-    metaOptions: CreatePostMetaOptionsDto[];
+    metaOptions?: CreatePostMetaOptionsDto | null;
 
 
 }

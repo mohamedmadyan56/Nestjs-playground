@@ -7,8 +7,9 @@ import { type } from "os";
 import { User } from "./users/user.entity";
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
+import { DatabaseModule } from './database/database.module';
 @Module({
-    imports: [UserModule, PostsModule, AuthModule, TypeOrmModule.forRootAsync({
+    imports: [UserModule, PostsModule, AuthModule,DatabaseModule ,TypeOrmModule.forRootAsync({
         imports: [],
         inject: [],
         useFactory: () => ({
@@ -21,10 +22,10 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
             host: 'localhost',
             port: 5432,
             username: 'postgres',
-            password: 'madyan1234',
+            password: '123456',
             database: 'nestjs-blog'
         })
 
-    }), TagsModule, MetaOptionsModule],
+    }), TagsModule, MetaOptionsModule, DatabaseModule],
 })
 export class AppModule { }
