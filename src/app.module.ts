@@ -8,8 +8,11 @@ import { User } from "./users/user.entity";
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { DatabaseModule } from './database/database.module';
+import {ConfigModule} from '@nestjs/config';
 @Module({
-    imports: [UserModule, PostsModule, AuthModule,DatabaseModule ,TypeOrmModule.forRootAsync({
+    imports: [UserModule,ConfigModule.forRoot({
+        isGlobal:true,
+    }), PostsModule, AuthModule,DatabaseModule ,TypeOrmModule.forRootAsync({
         imports: [],
         inject: [],
         useFactory: () => ({

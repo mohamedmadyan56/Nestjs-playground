@@ -27,4 +27,18 @@ export class PostsController {
 
     }
 
+
+
+
+
+
+@Delete()
+public deletePost(
+  @Query('id', ParseIntPipe) id: number,
+) {
+  return this.postService.delete(id);
+}
+
+
+
 }
