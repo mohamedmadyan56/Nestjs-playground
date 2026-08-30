@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UsersService } from '../users/users.service';
+import { usersService } from '../users/users.service';
 import { Post } from './post.entity';
 import { MetaOption } from '../meta-options/meta-options.entity';
 
@@ -42,7 +42,16 @@ export class PostsService {
   }
 
 
-
+  public async delete(id: number) {
+    let post = await this.postRepository.findOneBy({ id });
+    //find the post by id
+    await this.postRepository.delete(id);
+    await this.metaOptionsRepository.delete(post.metaOptions.id);
+    return {
+      deleted:true,
+      id
+    }
+   
 
 
 }
